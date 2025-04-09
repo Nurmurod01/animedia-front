@@ -1,8 +1,21 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0f0f1a;
+  --foreground: #f0f0ff;
+  --primary: #8a2be2; /* Bright purple */
+  --primary-foreground: #ffffff;
+  --secondary: #ff5d8f; /* Vibrant pink */
+  --secondary-foreground: #ffffff;
+  --accent: #00ccff; /* Bright cyan */
+  --accent-foreground: #000000;
+  --muted: #1a1a2e;
+  --muted-foreground: #c0c0d0;
+  --card: #16162a;
+  --card-foreground: #f0f0ff;
+  --border: #2a2a4a;
+  --input: #2a2a4a;
+  --ring: #8a2be2;
 }
 
 @theme inline {
@@ -14,8 +27,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0f0f1a;
+    --foreground: #f0f0ff;
   }
 }
 
@@ -23,4 +36,36 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Anime-style gradient buttons */
+.btn-anime-gradient {
+  background: linear-gradient(45deg, #8a2be2, #ff5d8f);
+  transition: all 0.3s ease;
+}
+
+.btn-anime-gradient:hover {
+  background: linear-gradient(45deg, #ff5d8f, #8a2be2);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(138, 43, 226, 0.3);
+}
+
+/* Neon text effect for headings */
+.neon-text {
+  text-shadow: 0 0 5px #8a2be2, 0 0 10px #8a2be2, 0 0 15px #8a2be2;
+}
+
+/* Gradient backgrounds */
+.anime-gradient-bg {
+  background: linear-gradient(135deg, #0f0f1a 0%, #1a1a3a 100%);
+}
+
+/* Card hover effects */
+.anime-card {
+  transition: all 0.3s ease;
+}
+
+.anime-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(138, 43, 226, 0.25);
 }

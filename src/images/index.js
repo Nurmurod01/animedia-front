@@ -1,0 +1,13 @@
+export { default as JJK } from "./jjk.jpg";
+export { default as Naruto } from "./naruto.jpg";
+export { default as Sharq } from "./sharq.jpg";
+export { default as Drama } from "./drama.jpg";
+export { default as SciFi } from "./sci-fi.jpg";
+export { default as OnePis } from "./onepis.jpeg";
+export { default as Action } from "./action.jpeg";
+export { default as HxH } from "./hxh.webp";
+export { default as Solo } from "./sololeveling.webp";
+export { default as Midnight } from "./midnight.webp";
+export { default as Comedy } from "./comedy.webp";
+export { default as Trailer } from "./trailer.webp";
+export { default as User } from "./admin.webp";

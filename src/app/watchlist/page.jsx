@@ -7,11 +7,11 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Star, Play, Clock, Plus, Trash2 } from "lucide-react"
-import { useAuth } from "@/contexts/auth-context"
+// import { useAuth } from "@/contexts/auth-context"
 import { Loader2 } from "lucide-react"
 
 export default function WatchlistPage() {
-  const { isAuthenticated, loading, user } = useAuth()
+  // const { isAuthenticated, loading, user } = useAuth()
   const [mounted, setMounted] = useState(false)
 
   // Fix for hydration issues
@@ -23,28 +23,28 @@ export default function WatchlistPage() {
     return null
   }
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[calc(100vh-8rem)]">
-        <div className="flex flex-col items-center gap-2">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    )
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="flex items-center justify-center min-h-[calc(100vh-8rem)]">
+  //       <div className="flex flex-col items-center gap-2">
+  //         <Loader2 className="h-8 w-8 animate-spin text-primary" />
+  //         <p className="text-muted-foreground">Loading...</p>
+  //       </div>
+  //     </div>
+  //   )
+  // }
 
-  if (!isAuthenticated) {
-    return (
-      <div className="container mx-auto py-12 text-center">
-        <h1 className="text-2xl font-bold mb-4">Please sign in to view your watchlist</h1>
-        <p className="text-muted-foreground mb-6">You need to be logged in to access this page.</p>
-        <Button asChild>
-          <Link href="/auth/login?redirectTo=/watchlist">Sign In</Link>
-        </Button>
-      </div>
-    )
-  }
+  // if (!isAuthenticated) {
+  //   return (
+  //     <div className="container mx-auto py-12 text-center">
+  //       <h1 className="text-2xl font-bold mb-4">Please sign in to view your watchlist</h1>
+  //       <p className="text-muted-foreground mb-6">You need to be logged in to access this page.</p>
+  //       <Button asChild>
+  //         <Link href="/auth/login?redirectTo=/watchlist">Sign In</Link>
+  //       </Button>
+  //     </div>
+  //   )
+  // }
 
   return <WatchlistContent userId={user.id} />
 }

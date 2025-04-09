@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { useAuth } from "@/contexts/auth-context"
+// import { useAuth } from "@/contexts/auth-context"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -24,24 +24,24 @@ export default function RegisterPage() {
   const [mounted, setMounted] = useState(false)
 
   const router = useRouter()
-  const { register, clearError, error, loading, isAuthenticated } = useAuth()
+  // const { register, clearError, error, loading, isAuthenticated } = useAuth()
 
   // Fix for hydration issues
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  useEffect(() => {
-    if (mounted) {
-      // Clear any previous errors
-      clearError()
+  // useEffect(() => {
+  //   if (mounted) {
+  //     // Clear any previous errors
+  //     clearError()
 
-      // If already authenticated, redirect
-      if (isAuthenticated) {
-        router.push("/")
-      }
-    }
-  }, [isAuthenticated, router, clearError, mounted])
+  //     // If already authenticated, redirect
+  //     if (isAuthenticated) {
+  //       router.push("/")
+  //     }
+  //   }
+  // }, [isAuthenticated, router, clearError, mounted])
 
   const validateForm = () => {
     const errors = {}

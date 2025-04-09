@@ -7,7 +7,7 @@ import { Loader2 } from "lucide-react"
 
 export default function AuthGuard({ children }) {
   const [isLoading, setIsLoading] = useState(true)
-  const { isAuthenticated, loading } = useAuth()
+  // const { isAuthenticated, loading } = useAuth()
   const router = useRouter()
   const pathname = usePathname()
   const [mounted, setMounted] = useState(false)
@@ -17,19 +17,19 @@ export default function AuthGuard({ children }) {
     setMounted(true)
   }, [])
 
-  useEffect(() => {
-    // Wait for auth check to complete
-    if (mounted && !loading) {
-      if (!isAuthenticated) {
-        // Redirect to login with return URL
-        router.push(`/auth/login?redirectTo=${encodeURIComponent(pathname)}`)
-      } else {
-        setIsLoading(false)
-      }
-    }
-  }, [isAuthenticated, loading, router, pathname, mounted])
+  // useEffect(() => {
+  //   // Wait for auth check to complete
+  //   if (mounted && !loading) {
+  //     if (!isAuthenticated) {
+  //       // Redirect to login with return URL
+  //       router.push(`/auth/login?redirectTo=${encodeURIComponent(pathname)}`)
+  //     } else {
+  //       setIsLoading(false)
+  //     }
+  //   }
+  // }, [isAuthenticated, loading, router, pathname, mounted])
 
-  if (!mounted || isLoading || loading) {
+  if (!mounted || isLoading ) {
     return (
       <div className="flex items-center justify-center min-h-[calc(100vh-8rem)]">
         <div className="flex flex-col items-center gap-2">

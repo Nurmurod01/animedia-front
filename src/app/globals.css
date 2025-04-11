@@ -54,7 +54,24 @@ body {
 .neon-text {
   text-shadow: 0 0 5px #8a2be2, 0 0 10px #8a2be2, 0 0 15px #8a2be2;
 }
+.border-gradient {
+  position: relative;
+  border-radius: 0.75rem; /* 2xl */
+  z-index: 0;
+}
 
+.border-gradient::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  background: linear-gradient(135deg, #8a2be2, #ff5d8f);
+  border-radius: inherit;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  z-index: -1;
+}
 /* Gradient backgrounds */
 .anime-gradient-bg {
   background: linear-gradient(135deg, #0f0f1a 0%, #1a1a3a 100%);

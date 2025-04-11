@@ -1,48 +1,52 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { data } from "@/data"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Star, Play, Plus, Calendar, Globe } from "lucide-react"
-import CommentSection from "@/components/comment-section"
-import RelatedMovies from "@/components/related-movies"
-import VideoPlayer from "@/components/video-player"
-import Image from "next/image"
+import { use, useState } from "react";
+import { data } from "@/data";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Star, Play, Plus, Calendar, Globe } from "lucide-react";
+import CommentSection from "@/components/comment-section";
+import RelatedMovies from "@/components/related-movies";
+import VideoPlayer from "@/components/video-player";
+import Image from "next/image";
 
 export default function MoviePage({ params }) {
-  const [showTrailer, setShowTrailer] = useState(false)
+  const [showTrailer, setShowTrailer] = useState(false);
 
-  const movieId = Number.parseInt(params.id)
-  const movie = data.movies[movieId]
+  const movieId = use(params).id;
+  const movie = data.movies[movieId];
 
   if (!movie) {
     return (
       <div className="container mx-auto py-12 text-center">
-        <h1 className="text-2xl font-bold mb-4">Movie not found</h1>
-        <p className="text-muted-foreground mb-6">The movie you're looking for doesn't exist or has been removed.</p>
+        <h1 className="text-2xl font-bold mb-4">Anime topilmadi</h1>
+        <p className="text-muted-foreground mb-6">
+          Siz izlayotgan anime mavjud emas yoki oʻchirib tashlangan.
+        </p>
         <Button
           asChild
           className="bg-gradient-to-r from-[#8a2be2] to-[#ff5d8f] hover:from-[#ff5d8f] hover:to-[#8a2be2] border-none"
         >
-          <Link href="/">Back to Home</Link>
+          <Link href="/">Ortga qaytish</Link>
         </Button>
       </div>
-    )
+    );
   }
 
   // Get genre
-  const genre = data.genres[movie.genre] || { name: "Unknown" }
+  const genre = data.genres[movie.genre] || { name: "Unknown" };
 
   // Get comments for this movie
-  const comments = Object.values(data.comments).filter((comment) => comment.movieId === movieId)
+  const comments = Object.values(data.comments).filter(
+    (comment) => comment.movieId === movieId
+  );
 
   // Get similar movies (same genre)
   const similarMovies = Object.values(data.movies)
     .filter((m) => m.id !== movieId && m.genre === movie.genre)
-    .slice(0, 3)
+    .slice(0, 3);
 
   return (
     <div>
@@ -69,7 +73,9 @@ export default function MoviePage({ params }) {
           <div className="lg:col-span-2">
             <div className="mb-6">
               <Badge className="mb-2 bg-[#ff5d8f]">{movie.ageLimit}</Badge>
-              <h1 className="text-3xl md:text-4xl font-bold mb-2 neon-text">{movie.title}</h1>
+              <h1 className="text-3xl md:text-4xl font-bold mb-2 neon-text">
+                {movie.title}
+              </h1>
               <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-4">
                 <div className="flex items-center">
                   <Calendar className="h-4 w-4 mr-1" />
@@ -97,11 +103,15 @@ export default function MoviePage({ params }) {
                 onClick={() => setShowTrailer(!showTrailer)}
               >
                 <Play className="mr-2 h-4 w-4" />
-                {showTrailer ? "Hide Trailer" : "Watch Now"}
+                {showTrailer ? "Yopish" : "Tailerni Ko'rish"}
               </Button>
-              <Button variant="outline" size="lg" className="border-[#8a2be2] text-white hover:bg-[#8a2be2]/20">
+              <Button
+                variant="outline"
+                size="lg"
+                className="border-[#8a2be2] text-white hover:bg-[#8a2be2]/20"
+              >
                 <Plus className="mr-2 h-4 w-4" />
-                Add to Watchlist
+                Kuzatuv roʻyxatiga qoʻshish
               </Button>
             </div>
 
@@ -115,48 +125,32 @@ export default function MoviePage({ params }) {
                   className="border border-[#2a2a4a] rounded-lg overflow-hidden"
                 />
                 <div className="mt-2 p-3 bg-[#16162a] rounded-b-lg border border-t-0 border-[#2a2a4a]">
-                  <h3 className="text-lg font-semibold">{movie.title} - Trailer</h3>
-                  <p className="text-sm text-muted-foreground mt-1">Official trailer for {movie.title}</p>
+                  <h3 className="text-lg font-semibold">
+                    {movie.title} - Trailer
+                  </h3>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {movie.title}ning rasmiy Traileri
+                  </p>
                 </div>
               </div>
             )}
 
-            <Tabs defaultValue="about">
-              <TabsList className="mb-4 bg-[#1a1a2e]">
-                <TabsTrigger value="about" className="data-[state=active]:bg-[#8a2be2] data-[state=active]:text-white">
-                  About
-                </TabsTrigger>
+            <Tabs defaultValue="comments">
+              <TabsList className="mb-4 bg-[#1a1a2e] ">
                 <TabsTrigger
                   value="comments"
-                  className="data-[state=active]:bg-[#8a2be2] data-[state=active]:text-white"
+                  className="data-[state=active]:bg-[#8a2be2] data-[state=active]:text-white "
                 >
-                  Comments ({comments.length})
+                  Izohlar ({comments.length})
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="about" className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">Synopsis</h3>
-                  <p>{movie.description}</p>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">Details</h3>
-                  <dl className="grid grid-cols-2 gap-2">
-                    <dt className="text-muted-foreground">Release Date</dt>
-                    <dd>{movie.releaseDate}</dd>
-                    <dt className="text-muted-foreground">Country</dt>
-                    <dd>{movie.country}</dd>
-                    <dt className="text-muted-foreground">Genre</dt>
-                    <dd>{genre.name}</dd>
-                    <dt className="text-muted-foreground">Age Limit</dt>
-                    <dd>{movie.ageLimit}</dd>
-                  </dl>
-                </div>
-              </TabsContent>
-
               <TabsContent value="comments">
-                <CommentSection comments={comments} users={data.users} />
+                <CommentSection
+                  className="border-gradient"
+                  comments={comments}
+                  users={data.users}
+                />
               </TabsContent>
             </Tabs>
           </div>
@@ -167,6 +161,5 @@ export default function MoviePage({ params }) {
         </div>
       </section>
     </div>
-  )
+  );
 }
-

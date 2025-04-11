@@ -1,8 +1,17 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useRef } from "react"
-import { Play, Pause, Volume2, VolumeX, Maximize, SkipForward, SkipBack, Loader } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { useState, useEffect, useRef } from "react";
+import {
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  Maximize,
+  SkipForward,
+  SkipBack,
+  Loader,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function VideoPlayer({
   src,
@@ -13,218 +22,224 @@ export default function VideoPlayer({
   controls = true,
   muted = false,
 }) {
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [isMuted, setIsMuted] = useState(muted)
-  const [volume, setVolume] = useState(1)
-  const [currentTime, setCurrentTime] = useState(0)
-  const [duration, setDuration] = useState(0)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [showControls, setShowControls] = useState(true)
-  const [isFullscreen, setIsFullscreen] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(muted);
+  const [volume, setVolume] = useState(1);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showControls, setShowControls] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
-  const videoRef = useRef(null)
-  const containerRef = useRef(null)
-  const controlsTimeoutRef = useRef(null)
+  const videoRef = useRef(null);
+  const containerRef = useRef(null);
+  const controlsTimeoutRef = useRef(null);
 
   // Detect video source type
   const getVideoType = (url) => {
-    if (!url) return "unknown"
+    if (!url) return "unknown";
 
     if (url.includes("youtube.com") || url.includes("youtu.be")) {
-      return "youtube"
+      return "youtube";
     } else if (url.includes("vimeo.com")) {
-      return "vimeo"
+      return "vimeo";
     } else if (url.endsWith(".mp4")) {
-      return "mp4"
+      return "mp4";
     } else if (url.endsWith(".webm")) {
-      return "webm"
+      return "webm";
     } else if (url.endsWith(".ogg") || url.endsWith(".ogv")) {
-      return "ogg"
+      return "ogg";
     }
 
-    return "unknown"
-  }
+    return "unknown";
+  };
 
   // Format embed URL for external video platforms
   const getEmbedUrl = (url) => {
-    if (!url) return null
+    if (!url) return null;
 
-    const videoType = getVideoType(url)
+    const videoType = getVideoType(url);
 
     if (videoType === "youtube") {
-      const videoId = url.includes("v=") ? url.split("v=")[1].split("&")[0] : url.split("/").pop()
+      const videoId = url.includes("v=")
+        ? url.split("v=")[1].split("&")[0]
+        : url.split("/").pop();
 
-      return `https://www.youtube.com/embed/${videoId}?autoplay=${autoPlay ? 1 : 0}&mute=${muted ? 1 : 0}&controls=${controls ? 1 : 0}`
+      return `https://www.youtube.com/embed/${videoId}?autoplay=${
+        autoPlay ? 1 : 0
+      }&mute=${muted ? 1 : 0}&controls=${controls ? 1 : 0}`;
     }
 
     if (videoType === "vimeo") {
-      const videoId = url.split("/").pop()
-      return `https://player.vimeo.com/video/${videoId}?autoplay=${autoPlay ? 1 : 0}&muted=${muted ? 1 : 0}`
+      const videoId = url.split("/").pop();
+      return `https://player.vimeo.com/video/${videoId}?autoplay=${
+        autoPlay ? 1 : 0
+      }&muted=${muted ? 1 : 0}`;
     }
 
-    return url
-  }
+    return url;
+  };
 
-  const videoType = getVideoType(src)
-  const embedUrl = getEmbedUrl(src)
-  const isExternalVideo = videoType === "youtube" || videoType === "vimeo"
+  const videoType = getVideoType(src);
+  const embedUrl = getEmbedUrl(src);
+  const isExternalVideo = videoType === "youtube" || videoType === "vimeo";
 
   // Handle play/pause
   const togglePlay = () => {
-    if (!videoRef.current) return
+    if (!videoRef.current) return;
 
     if (isPlaying) {
-      videoRef.current.pause()
+      videoRef.current.pause();
     } else {
-      videoRef.current.play()
+      videoRef.current.play();
     }
 
-    setIsPlaying(!isPlaying)
-  }
+    setIsPlaying(!isPlaying);
+  };
 
   // Handle mute/unmute
   const toggleMute = () => {
-    if (!videoRef.current) return
+    if (!videoRef.current) return;
 
-    videoRef.current.muted = !isMuted
-    setIsMuted(!isMuted)
-  }
+    videoRef.current.muted = !isMuted;
+    setIsMuted(!isMuted);
+  };
 
   // Handle volume change
   const handleVolumeChange = (e) => {
-    const newVolume = Number.parseFloat(e.target.value)
-    if (!videoRef.current) return
+    const newVolume = Number.parseFloat(e.target.value);
+    if (!videoRef.current) return;
 
-    videoRef.current.volume = newVolume
-    setVolume(newVolume)
+    videoRef.current.volume = newVolume;
+    setVolume(newVolume);
 
     if (newVolume === 0) {
-      setIsMuted(true)
-      videoRef.current.muted = true
+      setIsMuted(true);
+      videoRef.current.muted = true;
     } else if (isMuted) {
-      setIsMuted(false)
-      videoRef.current.muted = false
+      setIsMuted(false);
+      videoRef.current.muted = false;
     }
-  }
+  };
 
   // Handle seeking
   const handleSeek = (e) => {
-    if (!videoRef.current) return
+    if (!videoRef.current) return;
 
-    const seekTime = Number.parseFloat(e.target.value)
-    videoRef.current.currentTime = seekTime
-    setCurrentTime(seekTime)
-  }
+    const seekTime = Number.parseFloat(e.target.value);
+    videoRef.current.currentTime = seekTime;
+    setCurrentTime(seekTime);
+  };
 
   // Handle fullscreen
   const toggleFullscreen = () => {
-    if (!containerRef.current) return
+    if (!containerRef.current) return;
 
     if (!document.fullscreenElement) {
       containerRef.current.requestFullscreen().catch((err) => {
-        console.error(`Error attempting to enable fullscreen: ${err.message}`)
-      })
+        console.error(`Error attempting to enable fullscreen: ${err.message}`);
+      });
     } else {
-      document.exitFullscreen()
+      document.exitFullscreen();
     }
-  }
+  };
 
   // Format time (seconds to MM:SS)
   const formatTime = (timeInSeconds) => {
-    const minutes = Math.floor(timeInSeconds / 60)
-    const seconds = Math.floor(timeInSeconds % 60)
-    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`
-  }
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = Math.floor(timeInSeconds % 60);
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  };
 
   // Skip forward/backward
   const skip = (seconds) => {
-    if (!videoRef.current) return
+    if (!videoRef.current) return;
 
-    videoRef.current.currentTime += seconds
-  }
+    videoRef.current.currentTime += seconds;
+  };
 
   // Show/hide controls on mouse movement
   const handleMouseMove = () => {
-    setShowControls(true)
+    setShowControls(true);
 
     if (controlsTimeoutRef.current) {
-      clearTimeout(controlsTimeoutRef.current)
+      clearTimeout(controlsTimeoutRef.current);
     }
 
     controlsTimeoutRef.current = setTimeout(() => {
       if (isPlaying) {
-        setShowControls(false)
+        setShowControls(false);
       }
-    }, 3000)
-  }
+    }, 3000);
+  };
 
   // Event listeners for HTML5 video
   useEffect(() => {
-    const videoElement = videoRef.current
-    if (!videoElement || isExternalVideo) return
+    const videoElement = videoRef.current;
+    if (!videoElement || isExternalVideo) return;
 
-    const onPlay = () => setIsPlaying(true)
-    const onPause = () => setIsPlaying(false)
+    const onPlay = () => setIsPlaying(true);
+    const onPause = () => setIsPlaying(false);
     const onVolumeChange = () => {
-      setVolume(videoElement.volume)
-      setIsMuted(videoElement.muted)
-    }
-    const onTimeUpdate = () => setCurrentTime(videoElement.currentTime)
+      setVolume(videoElement.volume);
+      setIsMuted(videoElement.muted);
+    };
+    const onTimeUpdate = () => setCurrentTime(videoElement.currentTime);
     const onLoadedMetadata = () => {
-      setDuration(videoElement.duration)
-      setIsLoading(false)
-    }
-    const onLoadedData = () => setIsLoading(false)
+      setDuration(videoElement.duration);
+      setIsLoading(false);
+    };
+    const onLoadedData = () => setIsLoading(false);
     const onError = () => {
-      setError("Error loading video")
-      setIsLoading(false)
-    }
+      setError("Error loading video");
+      setIsLoading(false);
+    };
     const onFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement)
-    }
+      setIsFullscreen(!!document.fullscreenElement);
+    };
 
-    videoElement.addEventListener("play", onPlay)
-    videoElement.addEventListener("pause", onPause)
-    videoElement.addEventListener("volumechange", onVolumeChange)
-    videoElement.addEventListener("timeupdate", onTimeUpdate)
-    videoElement.addEventListener("loadedmetadata", onLoadedMetadata)
-    videoElement.addEventListener("loadeddata", onLoadedData)
-    videoElement.addEventListener("error", onError)
-    document.addEventListener("fullscreenchange", onFullscreenChange)
+    videoElement.addEventListener("play", onPlay);
+    videoElement.addEventListener("pause", onPause);
+    videoElement.addEventListener("volumechange", onVolumeChange);
+    videoElement.addEventListener("timeupdate", onTimeUpdate);
+    videoElement.addEventListener("loadedmetadata", onLoadedMetadata);
+    videoElement.addEventListener("loadeddata", onLoadedData);
+    videoElement.addEventListener("error", onError);
+    document.addEventListener("fullscreenchange", onFullscreenChange);
 
     return () => {
-      videoElement.removeEventListener("play", onPlay)
-      videoElement.removeEventListener("pause", onPause)
-      videoElement.removeEventListener("volumechange", onVolumeChange)
-      videoElement.removeEventListener("timeupdate", onTimeUpdate)
-      videoElement.removeEventListener("loadedmetadata", onLoadedMetadata)
-      videoElement.removeEventListener("loadeddata", onLoadedData)
-      videoElement.removeEventListener("error", onError)
-      document.removeEventListener("fullscreenchange", onFullscreenChange)
+      videoElement.removeEventListener("play", onPlay);
+      videoElement.removeEventListener("pause", onPause);
+      videoElement.removeEventListener("volumechange", onVolumeChange);
+      videoElement.removeEventListener("timeupdate", onTimeUpdate);
+      videoElement.removeEventListener("loadedmetadata", onLoadedMetadata);
+      videoElement.removeEventListener("loadeddata", onLoadedData);
+      videoElement.removeEventListener("error", onError);
+      document.removeEventListener("fullscreenchange", onFullscreenChange);
 
       if (controlsTimeoutRef.current) {
-        clearTimeout(controlsTimeoutRef.current)
+        clearTimeout(controlsTimeoutRef.current);
       }
-    }
-  }, [isExternalVideo])
+    };
+  }, [isExternalVideo]);
 
   // Auto-hide controls
   useEffect(() => {
     if (isPlaying) {
       controlsTimeoutRef.current = setTimeout(() => {
-        setShowControls(false)
-      }, 3000)
+        setShowControls(false);
+      }, 3000);
     } else {
-      setShowControls(true)
+      setShowControls(true);
     }
 
     return () => {
       if (controlsTimeoutRef.current) {
-        clearTimeout(controlsTimeoutRef.current)
+        clearTimeout(controlsTimeoutRef.current);
       }
-    }
-  }, [isPlaying])
+    };
+  }, [isPlaying]);
 
   return (
     <div
@@ -234,7 +249,6 @@ export default function VideoPlayer({
       onMouseLeave={() => isPlaying && setShowControls(false)}
     >
       {isExternalVideo ? (
-        // External video (YouTube, Vimeo)
         <div className="aspect-video w-full">
           <iframe
             src={embedUrl}
@@ -257,7 +271,7 @@ export default function VideoPlayer({
             onClick={togglePlay}
           >
             <source src={src} type={`video/${videoType}`} />
-            Your browser does not support the video tag.
+            Brauzeringiz video tegini qo'llab-quvvatlamaydi.
           </video>
 
           {/* Loading overlay */}
@@ -275,14 +289,14 @@ export default function VideoPlayer({
                 <button
                   className="px-4 py-2 bg-[#8a2be2] text-white rounded-md"
                   onClick={() => {
-                    setError(null)
-                    setIsLoading(true)
+                    setError(null);
+                    setIsLoading(true);
                     if (videoRef.current) {
-                      videoRef.current.load()
+                      videoRef.current.load();
                     }
                   }}
                 >
-                  Retry
+                  Qayta urinish
                 </button>
               </div>
             </div>
@@ -315,7 +329,11 @@ export default function VideoPlayer({
                     className="p-1 rounded-full hover:bg-white/20"
                     aria-label={isPlaying ? "Pause" : "Play"}
                   >
-                    {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
+                    {isPlaying ? (
+                      <Pause className="h-5 w-5" />
+                    ) : (
+                      <Play className="h-5 w-5" />
+                    )}
                   </button>
 
                   {/* Skip buttons */}
@@ -342,7 +360,11 @@ export default function VideoPlayer({
                       className="p-1 rounded-full hover:bg-white/20"
                       aria-label={isMuted ? "Unmute" : "Mute"}
                     >
-                      {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
+                      {isMuted ? (
+                        <VolumeX className="h-5 w-5" />
+                      ) : (
+                        <Volume2 className="h-5 w-5" />
+                      )}
                     </button>
 
                     <input
@@ -366,7 +388,9 @@ export default function VideoPlayer({
                 <button
                   onClick={toggleFullscreen}
                   className="p-1 rounded-full hover:bg-white/20"
-                  aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+                  aria-label={
+                    isFullscreen ? "Exit fullscreen" : "Enter fullscreen"
+                  }
                 >
                   <Maximize className="h-5 w-5" />
                 </button>
@@ -376,6 +400,5 @@ export default function VideoPlayer({
         </>
       )}
     </div>
-  )
+  );
 }
-

@@ -1,26 +1,26 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { data } from "@/data"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
-import { Star, Play, Clock, Plus, Trash2 } from "lucide-react"
+import { useState, useEffect } from "react";
+import { data } from "@/data";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Star, Play, Clock, Plus, Trash2 } from "lucide-react";
 // import { useAuth } from "@/contexts/auth-context"
-import { Loader2 } from "lucide-react"
+import { Loader2 } from "lucide-react";
 
 export default function WatchlistPage() {
   // const { isAuthenticated, loading, user } = useAuth()
-  const [mounted, setMounted] = useState(false)
+  const [mounted, setMounted] = useState(false);
 
   // Fix for hydration issues
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
   if (!mounted) {
-    return null
+    return null;
   }
 
   // if (loading) {
@@ -46,17 +46,19 @@ export default function WatchlistPage() {
   //   )
   // }
 
-  return <WatchlistContent userId={user.id} />
+  return <WatchlistContent userId={user.id} />;
 }
 
 function WatchlistContent({ userId }) {
   // Get user's watchlist
-  const watchlist = Object.values(data.watchlists).filter((item) => item.userId === userId)
+  const watchlist = Object.values(data.watchlists).filter(
+    (item) => item.userId === userId
+  );
 
   // Group by status
-  const watching = watchlist.filter((item) => item.status === "watching")
-  const planned = watchlist.filter((item) => item.status === "planned")
-  const completed = watchlist.filter((item) => item.status === "completed")
+  const watching = watchlist.filter((item) => item.status === "watching");
+  const planned = watchlist.filter((item) => item.status === "planned");
+  const completed = watchlist.filter((item) => item.status === "completed");
 
   return (
     <div className="container mx-auto py-8">
@@ -70,9 +72,15 @@ function WatchlistContent({ userId }) {
       <Tabs defaultValue="all">
         <TabsList className="mb-6">
           <TabsTrigger value="all">All ({watchlist.length})</TabsTrigger>
-          <TabsTrigger value="watching">Watching ({watching.length})</TabsTrigger>
-          <TabsTrigger value="planned">Plan to Watch ({planned.length})</TabsTrigger>
-          <TabsTrigger value="completed">Completed ({completed.length})</TabsTrigger>
+          <TabsTrigger value="watching">
+            Watching ({watching.length})
+          </TabsTrigger>
+          <TabsTrigger value="planned">
+            Plan to Watch ({planned.length})
+          </TabsTrigger>
+          <TabsTrigger value="completed">
+            Completed ({completed.length})
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="all">
@@ -92,7 +100,7 @@ function WatchlistContent({ userId }) {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }
 
 function WatchlistItems({ items }) {
@@ -102,29 +110,36 @@ function WatchlistItems({ items }) {
         <div className="mx-auto w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
           <Plus className="h-8 w-8 text-muted-foreground" />
         </div>
-        <h3 className="text-lg font-medium mb-2">Your watchlist is empty</h3>
-        <p className="text-muted-foreground mb-6">Start adding movies to keep track of what you want to watch.</p>
+        <h3 className="text-lg font-medium mb-2">Kuzatuv roʻyxatingiz boʻsh</h3>
+        <p className="text-muted-foreground mb-6">
+          Ko'rmoqchi bo'lgan narsalarni kuzatib borish uchun animelar qo'shishni
+          boshlang.
+        </p>
         <Button asChild>
-          <Link href="/movies">Browse Movies</Link>
+          <Link href="/movies">Anime qidirish</Link>
         </Button>
       </div>
-    )
+    );
   }
 
   return (
     <div className="space-y-6">
       {items.map((item) => {
-        const movie = data.movies[item.movieId]
-        if (!movie) return null
+        const movie = data.movies[item.movieId];
+        if (!movie) return null;
 
-        const genre = data.genres[movie.genre] ? data.genres[movie.genre].name : "Unknown"
+        const genre = data.genres[movie.genre]
+          ? data.genres[movie.genre].name
+          : "Unknown";
 
         return (
           <div key={item.id} className="border rounded-lg overflow-hidden">
             <div className="flex flex-col sm:flex-row">
               <div className="sm:w-48 h-32 sm:h-auto bg-muted">
                 <img
-                  src={movie.coverImage || "/placeholder.svg?height=200&width=300"}
+                  src={
+                    movie.coverImage || "/placeholder.svg?height=200&width=300"
+                  }
                   alt={movie.title}
                   className="w-full h-full object-cover"
                 />
@@ -145,38 +160,47 @@ function WatchlistItems({ items }) {
                   </div>
                   <Badge
                     variant={
-                      item.status === "watching" ? "default" : item.status === "completed" ? "success" : "secondary"
+                      item.status === "watching"
+                        ? "default"
+                        : item.status === "completed"
+                        ? "success"
+                        : "secondary"
                     }
                   >
                     {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
                   </Badge>
                 </div>
 
-                <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{movie.description}</p>
+                <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
+                  {movie.description}
+                </p>
 
                 <div className="flex items-center text-xs text-muted-foreground mb-4">
                   <Clock className="h-4 w-4 mr-1" />
-                  <span>Added on {new Date(item.addedAt).toLocaleDateString()}</span>
+                  <span>
+                    Added on {new Date(item.addedAt).toLocaleDateString()}
+                  </span>
                 </div>
 
                 <div className="flex flex-wrap gap-3">
                   <Button asChild size="sm">
                     <Link href={`/movies/${movie.id}`}>
                       <Play className="mr-2 h-4 w-4" />
-                      {item.status === "watching" ? "Continue Watching" : "Watch Now"}
+                      {item.status === "watching"
+                        ? "Continue Watching"
+                        : "Watch Now"}
                     </Link>
                   </Button>
                   <Button variant="outline" size="sm">
                     <Trash2 className="mr-2 h-4 w-4" />
-                    Remove
+                    O'chirish
                   </Button>
                 </div>
               </div>
             </div>
           </div>
-        )
+        );
       })}
     </div>
-  )
+  );
 }
-

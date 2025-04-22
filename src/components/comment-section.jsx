@@ -33,7 +33,7 @@ export default function CommentSection({ comments, users }) {
       <div className="space-y-4">
         {comments.length === 0 ? (
           <div className="text-center py-8">
-            <MessageSquare className="mx-auto h-12 w-12 text-muted-foreground opacity-50 mb-2" />
+            <MessageSquare className="mx-auto h-12 w-12 text-muted-foreground op/acity-50 mb-2" />
             <p className="text-muted-foreground">
               Hozircha izohlar yo‘q. Birinchi bo'lib fikr bildiring!
             </p>

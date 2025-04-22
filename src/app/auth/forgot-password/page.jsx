@@ -34,7 +34,6 @@ export default function ForgotPasswordPage() {
     if (validateForm()) {
       setLoading(true)
 
-      // Simulate API call
       setTimeout(() => {
         setLoading(false)
         setSuccess(true)

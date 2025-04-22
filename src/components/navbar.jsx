@@ -3,25 +3,34 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-// import { useAuth } from "@/contexts/auth-context"
+import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Search, Menu, LogIn } from "lucide-react";
+import { Search, Menu, LogIn, LogOut } from "lucide-react";
+import { Avatar } from "@radix-ui/react-avatar";
+import { loadUser, logout } from "@/redux/authSlice";
 
 export default function Navbar() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(loadUser());
+  }, [dispatch]);
+
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const pathname = usePathname();
-  // const { isAuthenticated, user, logout } = useAuth()
   const [scrolled, setScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  // Fix for hydration issues
+  const auth = useSelector((state) => state.auth);
+  const { isAuthenticated } = auth;
+  console.log(isAuthenticated);
+
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Handle scroll effect for navbar
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 50) {
@@ -35,13 +44,10 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleLogout = () => {
-    // logout();
-    // Redirect to home page or login page
-    window.location.href = "/";
+  const handleLogOut = () => {
+    dispatch(logout());
   };
 
-  // Prevent hydration errors by not rendering auth-dependent UI until mounted
   if (!mounted) {
     return (
       <header className="fixed top-0 z-50 w-full border-b border-[#2a2a4a] bg-[#0f0f1a]/95 backdrop-blur">
@@ -83,58 +89,28 @@ export default function Navbar() {
                   <span className="text-[#ff5d8f]">Media</span>
                 </Link>
                 <nav className="flex flex-col gap-4">
-                  <Link
-                    href="/"
-                    className={`text-muted-foreground hover:text-foreground relative group ${
-                      pathname === "/" ? "text-foreground font-medium" : ""
-                    }`}
-                  >
-                    Asosiy
-                    {pathname === "/" && (
-                      <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-[#8a2be2] to-[#ff5d8f]"></span>
-                    )}
-                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#8a2be2] to-[#ff5d8f] transition-all duration-300 group-hover:w-full"></span>
-                  </Link>
-                  <Link
-                    href="/movies"
-                    className={`text-muted-foreground hover:text-foreground relative group ${
-                      pathname === "/movies"
-                        ? "text-foreground font-medium"
-                        : ""
-                    }`}
-                  >
-                    Animelar
-                    {pathname === "/movies" && (
-                      <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-[#8a2be2] to-[#ff5d8f]"></span>
-                    )}
-                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#8a2be2] to-[#ff5d8f] transition-all duration-300 group-hover:w-full"></span>
-                  </Link>
-                  <Link
-                    href="/genres"
-                    className={`text-muted-foreground hover:text-foreground relative group ${
-                      pathname === "/genres"
-                        ? "text-foreground font-medium"
-                        : ""
-                    }`}
-                  >
-                    Janrlar
-                    {pathname === "/genres" && (
-                      <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-[#8a2be2] to-[#ff5d8f]"></span>
-                    )}
-                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#8a2be2] to-[#ff5d8f] transition-all duration-300 group-hover:w-full"></span>
-                  </Link>
-                  <Link
-                    href="/blog"
-                    className={`text-muted-foreground hover:text-foreground relative group ${
-                      pathname === "/blog" ? "text-foreground font-medium" : ""
-                    }`}
-                  >
-                    Yangiliklar
-                    {pathname === "/blog" && (
-                      <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-[#8a2be2] to-[#ff5d8f]"></span>
-                    )}
-                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#8a2be2] to-[#ff5d8f] transition-all duration-300 group-hover:w-full"></span>
-                  </Link>
+                  {[
+                    { href: "/", label: "Asosiy" },
+                    { href: "/movies", label: "Animelar" },
+                    { href: "/genres", label: "Janrlar" },
+                    { href: "/blog", label: "Yangiliklar" },
+                  ].map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={`text-muted-foreground hover:text-foreground relative group ${
+                        pathname === item.href
+                          ? "text-foreground font-medium"
+                          : ""
+                      }`}
+                    >
+                      {item.label}
+                      {pathname === item.href && (
+                        <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-[#8a2be2] to-[#ff5d8f]" />
+                      )}
+                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#8a2be2] to-[#ff5d8f] transition-all duration-300 group-hover:w-full" />
+                    </Link>
+                  ))}
                 </nav>
               </div>
             </SheetContent>
@@ -147,57 +123,29 @@ export default function Navbar() {
         </Link>
 
         <nav className="hidden md:flex items-center gap-6 text-sm">
-          <Link
-            href="/"
-            className={`font-medium transition-colors relative group ${
-              pathname === "/" && "text-munted-foreground"
-            }`}
-          >
-            Asosiy
-            {pathname === "/" && (
-              <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-[#8a2be2] to-[#ff5d8f]"></span>
-            )}
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#8a2be2] to-[#ff5d8f] transition-all duration-300 group-hover:w-full"></span>
-          </Link>
-          <Link
-            href="/movies"
-            className={`font-medium transition-colors relative group ${
-              pathname === "/movies" ||
-              (pathname.startsWith("/movies/") && "text-munted-foreground")
-            }`}
-          >
-            Animelar
-            {(pathname === "/movies" || pathname.startsWith("/movies/")) && (
-              <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-[#8a2be2] to-[#ff5d8f]"></span>
-            )}
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#8a2be2] to-[#ff5d8f] transition-all duration-300 group-hover:w-full"></span>
-          </Link>
-          <Link
-            href="/genres"
-            className={`font-medium transition-colors relative group ${
-              pathname === "/genres" ||
-              (pathname.startsWith("/genres/") && "text-munted-foreground")
-            }`}
-          >
-            Janrlar
-            {(pathname === "/genres" || pathname.startsWith("/genres/")) && (
-              <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-[#8a2be2] to-[#ff5d8f]"></span>
-            )}
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#8a2be2] to-[#ff5d8f] transition-all duration-300 group-hover:w-full"></span>
-          </Link>
-          <Link
-            href="/blog"
-            className={`font-medium transition-colors relative group ${
-              pathname === "/blog" ||
-              (pathname.startsWith("/blog/") && "text-munted-foreground")
-            }`}
-          >
-            Yangiliklar
-            {(pathname === "/blog" || pathname.startsWith("/blog/")) && (
-              <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-[#8a2be2] to-[#ff5d8f]"></span>
-            )}
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#8a2be2] to-[#ff5d8f] transition-all duration-300 group-hover:w-full"></span>
-          </Link>
+          {[
+            { href: "/", label: "Asosiy" },
+            { href: "/movies", label: "Animelar" },
+            { href: "/genres", label: "Janrlar" },
+            { href: "/blog", label: "Yangiliklar" },
+          ].map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`font-medium transition-colors relative group ${
+                pathname === item.href || pathname.startsWith(item.href + "/")
+                  ? "text-munted-foreground"
+                  : ""
+              }`}
+            >
+              {item.label}
+              {(pathname === item.href ||
+                pathname.startsWith(item.href + "/")) && (
+                <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-[#8a2be2] to-[#ff5d8f]" />
+              )}
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#8a2be2] to-[#ff5d8f] transition-all duration-300 group-hover:w-full" />
+            </Link>
+          ))}
         </nav>
 
         <div className="flex items-center ml-auto gap-2">
@@ -218,24 +166,41 @@ export default function Navbar() {
               size="icon"
               onClick={() => setIsSearchOpen(true)}
             >
-              <Search className="h-5 w-5" />
-              <span className="sr-only">Qidirish</span>
+              <span className="sr-only">
+                <Search className="h-5 w-5" /> Qidirish
+              </span>
             </Button>
           )}
 
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" asChild>
-              <Link href="/auth/login">
-                <LogIn className="mr-2 h-4 w-4" /> Kirish
-              </Link>
-            </Button>
-            <Button
-              className="bg-gradient-to-r from-[#8a2be2] to-[#ff5d8f] hover:from-[#ff5d8f] hover:to-[#8a2be2] border-none"
-              asChild
-            >
-              <Link href="/auth/register">Ro'yxatdan o'tish</Link>
-            </Button>
-          </div>
+          {isAuthenticated ? (
+            <>
+              <Button variant="ghost" asChild>
+                <Link href="/profile">
+                  <Avatar /> Profil
+                </Link>
+              </Button>
+              <Button
+                onClick={handleLogOut}
+                className="bg-gradient-to-r from-[#8a2be2] to-[#ff5d8f] hover:from-[#ff5d8f] hover:to-[#8a2be2] border-none"
+              >
+                <LogOut /> Chiqish
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant="ghost" asChild>
+                <Link href="/auth/login">
+                  <LogIn className="mr-2 h-4 w-4" /> Kirish
+                </Link>
+              </Button>
+              <Button
+                className="bg-gradient-to-r from-[#8a2be2] to-[#ff5d8f] hover:from-[#ff5d8f] hover:to-[#8a2be2] border-none"
+                asChild
+              >
+                <Link href="/auth/register">Ro'yxatdan o'tish</Link>
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </header>

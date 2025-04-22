@@ -1,5 +1,9 @@
+"use client"
+
 import { ThemeProvider } from "@/components/theme-provider";
+import store from "@/redux/store";
 import { Poppins } from "next/font/google";
+import { Provider } from "react-redux";
 
 // Poppins shriftini sozlash
 const poppins = Poppins({
@@ -9,9 +13,12 @@ const poppins = Poppins({
 });
 
 export function Providers({ children }) {
+ 
   return (
     <ThemeProvider attribute="class">
-      <div className={poppins.className}>{children}</div>
+      <Provider store={store}>
+        <div className={poppins.className}>{children}</div>
+      </Provider>
     </ThemeProvider>
   );
 }

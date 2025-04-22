@@ -8,6 +8,8 @@ import Image from "next/image";
 import GenreCard from "@/components/genrecard";
 
 export default function Home() {
+
+  
   const movies = Object.values(data.movies);
   const genres = data.genres;
   const posts = Object.values(data.posts);

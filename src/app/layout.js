@@ -13,6 +13,7 @@ export default function RootLayout({ children }) {
     <html suppressHydrationWarning>
       <body>
         <Providers>
+          <Toaster position="top-right" />
           <div className="flex min-h-screen flex-col bg-gradient-to-b from-[#0f0f1a] to-[#1a1a3a]">
             <Navbar />
             <main className="flex-1">{children}</main>
@@ -25,3 +26,4 @@ export default function RootLayout({ children }) {
 }
 
 import "./globals.css";
+import { Toaster } from "react-hot-toast";

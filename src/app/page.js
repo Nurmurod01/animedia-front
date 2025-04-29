@@ -14,6 +14,8 @@ export default function Home() {
   const genres = data.genres;
   const posts = Object.values(data.posts);
 
+  
+
   const featuredMovies = [...movies]
     .sort((a, b) => b.rating - a.rating)
     .slice(0, 3);

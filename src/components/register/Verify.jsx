@@ -18,7 +18,7 @@ import { Loader2, Mail } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { useVerifyMutation, useLoginMutation } from "@/redux/service/api";
 import { toast } from "react-hot-toast";
-import { login } from "@/redux/authSlice";
+import { login as loginAction } from "@/redux/authSlice";
 
 export default function Verify() {
   const [verificationCode, setVerificationCode] = useState("");
@@ -72,13 +72,18 @@ export default function Verify() {
 
       // Auto login after verification
       try {
-        const loginResponse = await loginUser({
+        const result = await loginUser({
           email,
           password,
         }).unwrap();
 
-        // Dispatch login action to update Redux state
-        dispatch(login(loginResponse));
+        const payload = {
+          user: result.user || {},
+          token: result.access_token || result.token,
+          role: "user",
+        };
+
+        dispatch(loginAction(payload));
 
         // Clean up temp storage
         localStorage.removeItem("tempEmail");

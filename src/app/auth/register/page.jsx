@@ -173,7 +173,7 @@ export default function RegisterPage() {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="username">Taxallus</Label>
+                <Label>Taxallus</Label>
                 <Input
                   className=""
                   id="username"
@@ -191,7 +191,7 @@ export default function RegisterPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label >Email</Label>
                 <Input
                   className=""
                   id="email"
@@ -210,7 +210,7 @@ export default function RegisterPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Parol</Label>
+                <Label >Parol</Label>
                 <Input
                   className=""
                   id="password"
@@ -229,7 +229,7 @@ export default function RegisterPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Parolni tasdiqlang</Label>
+                <Label >Parolni tasdiqlang</Label>
                 <Input
                   className=""
                   id="confirmPassword"
